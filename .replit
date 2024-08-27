@@ -1,7 +1,6 @@
 run = "npm run dev"
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web"]
 hidden = [".config", "tsconfig.json", "tsconfig.node.json", "vite.config.js", ".gitignore"]
-entrypoint = "src/App.tsx"
 
 [nix]
 channel = "stable-24_05"
@@ -11,8 +10,8 @@ language = "nodejs"
 
 [deployment]
 deploymentTarget = "static"
-build = ["npm", "run", "build"]
 publicDir = "dist"
+run = ["sh", "-c", "npm run dev"]
 
 [[ports]]
 localPort = 5173
