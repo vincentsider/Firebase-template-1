@@ -31,7 +31,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="home p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center text-red-500">Home Feed</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center text-blue-500">Home Feed</h1>
       <div className="max-w-2xl mx-auto">
         {posts.map((post) => (
           <div
