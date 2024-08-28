@@ -7,6 +7,7 @@ import Payment from "./Payment";
 interface Board {
   id: string;
   title: string;
+  imageUrl?: string;
 }
 
 const Board: React.FC = () => {
@@ -30,8 +31,19 @@ const Board: React.FC = () => {
 
   const handlePaymentSuccess = async () => {
     if (newBoardTitle.trim() === "") return;
+
+    // Generate image
+    const response = await fetch('https://c653b568-4511-4338-846a-3ac1ca41d346-00-3fsuybmpsiu3g.riker.replit.dev/openai/image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: newBoardTitle }),
+    });
+    const data = await response.json();
+    const imageUrl = data.image_url;
+
     await addDoc(collection(db, "boards"), {
       title: newBoardTitle,
+      imageUrl: imageUrl,
       createdAt: Timestamp.now(),
     });
     setNewBoardTitle("");
@@ -59,6 +71,7 @@ const Board: React.FC = () => {
           {boards.map((board) => (
             <div key={board.id} className="board bg-white shadow-md rounded-lg p-4 mb-4">
               <h2 className="text-xl font-bold">{board.title}</h2>
+              {board.imageUrl && <img src={board.imageUrl} alt={board.title} className="w-full h-64 object-cover rounded-lg mb-2" />}
               <List boardId={board.id} />
             </div>
           ))}
