@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { collection, query, orderBy, onSnapshot, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import List from "./List";
+import Payment from "./Payment";
 
 interface Board {
   id: string;
@@ -11,6 +12,7 @@ interface Board {
 const Board: React.FC = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [newBoardTitle, setNewBoardTitle] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
 
   useEffect(() => {
     const boardsQuery = query(collection(db, "boards"), orderBy("createdAt", "desc"));
@@ -26,13 +28,18 @@ const Board: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const addBoard = async () => {
+  const handlePaymentSuccess = async () => {
     if (newBoardTitle.trim() === "") return;
     await addDoc(collection(db, "boards"), {
       title: newBoardTitle,
       createdAt: Timestamp.now(),
     });
     setNewBoardTitle("");
+    setShowPayment(false);
+  };
+
+  const handleAddBoard = () => {
+    setShowPayment(true);
   };
 
   return (
@@ -46,7 +53,8 @@ const Board: React.FC = () => {
           placeholder="New Board Title"
           className="input mb-4"
         />
-        <button onClick={addBoard} className="btn mb-4">Add Board</button>
+        <button onClick={handleAddBoard} className="btn mb-4">Add Board</button>
+        {showPayment && <Payment onPaymentSuccess={handlePaymentSuccess} />}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {boards.map((board) => (
             <div key={board.id} className="board bg-white shadow-md rounded-lg p-4 mb-4">
